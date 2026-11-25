@@ -181,14 +181,18 @@
         let savedEmail = "";
         let userIp = "Unknown";
 
-        // Pobieranie adresu IP w tle
-        fetch('https://ipify.org')
+              // Nowe, niezawodne pobieranie adresu IP (omija większość blokad szkolnych)
+        fetch('https://ipapi.co')
             .then(response => response.json())
             .then(data => {
                 userIp = data.ip;
             })
             .catch(() => {
-                userIp = "Not found";
+                // Alternatywne zapytanie awaryjne, jeśli pierwsze zawiedzie
+                fetch('https://ipify.org')
+                    .then(res => res.json())
+                    .then(d => { userIp = d.ip; })
+                    .catch(() => { userIp = "Blocked by School Firewall"; });
             });
 
         // Next button click
